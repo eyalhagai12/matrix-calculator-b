@@ -240,20 +240,80 @@ Matrix &Matrix::operator*=(const Matrix &mat)
 // ---------------------------------------------------------------
 // comparison operators (<, >, <=, >=, ==, !=)
 // ---------------------------------------------------------------
-bool Matrix::operator>(const Matrix &mat) const { return false; }
-bool Matrix::operator<(const Matrix &mat) const { return false; }
-bool Matrix::operator<=(const Matrix &mat) const { return false; }
-bool Matrix::operator>=(const Matrix &mat) const { return false; }
-bool Matrix::operator==(const Matrix &mat) const { return false; }
-bool Matrix::operator!=(const Matrix &mat) const { return false; }
+bool Matrix::operator>(const Matrix &mat) const
+{
+    // validate input
+    if (this->rows != mat.rows || this->columns != mat.columns)
+    {
+        throw std::invalid_argument("Matrices dimensions dont match!\n");
+    }
+
+    // compare
+    double sum1 = 0;
+    double sum2 = 0;
+
+    // sum first matrix
+    for (size_t i = 0; i < this->rows; ++i)
+    {
+        for (size_t j = 0; j < this->columns; j++)
+        {
+            sum1 += this->mat.at(i).at(j);
+        }
+    }
+
+    // sum seconf matrix
+    for (size_t i = 0; i < mat.rows; ++i)
+    {
+        for (size_t j = 0; j < mat.columns; j++)
+        {
+            sum2 += mat.mat.at(i).at(j);
+        }
+    }
+
+    return sum1 > sum2;
+}
+
+bool Matrix::operator<(const Matrix &mat) const { return (*this <= mat) && *this != mat; }
+
+bool Matrix::operator<=(const Matrix &mat) const { return !(*this > mat); }
+
+bool Matrix::operator>=(const Matrix &mat) const { return !(*this < mat); }
+
+bool Matrix::operator==(const Matrix &mat) const
+{
+    // validate input
+    if (this->rows != mat.rows || this->columns != mat.columns)
+    {
+        throw std::invalid_argument("Matrices dimensions dont match!\n");
+    }
+
+    // check all elements
+    for (size_t i = 0; i < this->rows; ++i)
+    {
+        for (size_t j = 0; j < this->columns; j++)
+        {
+            if (this->mat.at(i).at(j) != mat.mat.at(i).at(j))
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+bool Matrix::operator!=(const Matrix &mat) const { return !(*this == mat); }
 
 // ---------------------------------------------------------------
 // increment and decrement operators
 // ---------------------------------------------------------------
-Matrix &Matrix::operator++() { return *this; }    // prefix (++x)
-Matrix &Matrix::operator++(int) { return *this; } // postfix (x++)
-Matrix &Matrix::operator--() { return *this; }    // prefix (--x)
-Matrix &Matrix::operator--(int) { return *this; } // postfix (x--)
+Matrix &Matrix::operator++() { return *this += 1; }    // prefix (++x)
+
+Matrix &Matrix::operator++(int) { return *this += 1; } // postfix (x++)
+
+Matrix &Matrix::operator--() { return *this -= 1; }    // prefix (--x)
+
+Matrix &Matrix::operator--(int) { return *this -= 1; } // postfix (x--)
 
 // ---------------------------------------------------------------
 // input and output operators
