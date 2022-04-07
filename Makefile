@@ -7,6 +7,15 @@ OBJECTS=$(subst sources/,objects/,$(subst .cpp,.o,$(SOURCES)))
 
 run: test
 
+main: main.o Matrix.o
+	clang++-9 -o main main.o Matrix.o
+
+main.o: sources/main.cpp
+	clang++-9 -c -g sources/main.cpp
+
+Matrix.o: sources/Matrix.cpp sources/Matrix.hpp
+	clang++-9 -c -g sources/Matrix.cpp sources/Matrix.hpp
+
 test: TestRunner.o Test.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
@@ -28,3 +37,4 @@ valgrind: test
 clean:
 	rm -f $(OBJECTS) *.o test* 
 	rm -f StudentTest*.cpp
+	rm main sources/*.gch
