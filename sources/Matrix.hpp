@@ -7,6 +7,7 @@ namespace zich
 	Matrix operator+(const double &value, const Matrix &mat);
 	Matrix operator-(const double &value, const Matrix &mat);
 	Matrix operator*(const double &value, const Matrix &mat);
+	Matrix operator*(double const &value, Matrix &mat);
 	std::ostream &operator<<(std::ostream &out, const Matrix &mat);
 	std::istream &operator>>(std::istream &in, Matrix &mat);
 
@@ -21,7 +22,7 @@ private:
 
 public:
 	// constructor and destructor
-	Matrix(std::vector<double> vec, int rows, int columns) : mat(std::vector<std::vector<double>>(rows, std::vector<double>(columns, 0.0))), rows(rows), columns(columns)
+	Matrix(std::vector<double> vec, int rows, int columns) : mat(std::vector<std::vector<double>>((size_t)rows, std::vector<double>((size_t)columns, 0.0))), rows(rows), columns(columns)
 	{
 		// validate input
 		if (rows * columns != vec.size())
@@ -34,11 +35,12 @@ public:
 		{
 			for (size_t j = 0; j < columns; ++j)
 			{
-				mat.at(i).at(j) = vec.at((i * columns) + j);
+				mat.at(i).at(j) = vec.at((i * (size_t)columns) + j);
 			}
 		}
 	}
-	Matrix();
+	Matrix() : rows(1), columns(1) {}
+	Matrix(const Matrix& matrix) : mat(matrix.mat), rows(matrix.rows), columns(matrix.columns) {} 
 	~Matrix();
 
 	// real value addition operators (+)
@@ -65,6 +67,7 @@ public:
 	Matrix operator*(const double &value) const;
 	Matrix &operator*=(const double &value);
 	friend Matrix operator*(const double &value, const Matrix &mat);
+	friend Matrix operator*(double const &value, Matrix &mat);
 
 	// matrix multiplaction operators (*)
 	Matrix operator*(const Matrix &mat) const;
@@ -80,9 +83,9 @@ public:
 
 	// increment and decrement operators
 	Matrix &operator++();	 // prefix (++x)
-	Matrix &operator++(int); // postfix (x++)
+	Matrix operator++(int); // postfix (x++)
 	Matrix &operator--();	 // prefix (--x)
-	Matrix &operator--(int); // postfix (x--)
+	Matrix operator--(int); // postfix (x--)
 
 	// input and output operators
 	friend std::ostream &operator<<(std::ostream &out, const Matrix &mat);

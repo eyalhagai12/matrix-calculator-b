@@ -19,11 +19,9 @@ std::vector<std::string> split(std::string str, const std::string &delimeter)
             result.push_back(str);
             break;
         }
-        else
-        {
-            result.push_back(str.substr(0, idx + delimeter.size()));
-            str = str.substr(idx + delimeter.size(), str.size());
-        }
+
+        result.push_back(str.substr(0, idx));
+        str = str.substr(idx + delimeter.size(), str.size());
     }
 
     return result;
@@ -31,7 +29,6 @@ std::vector<std::string> split(std::string str, const std::string &delimeter)
 
 // constructor and destructor
 std::vector<double> empty(1, 0.0);
-Matrix::Matrix() {}
 Matrix::~Matrix() {}
 
 // ---------------------------------------------------------------
@@ -99,6 +96,7 @@ Matrix &Matrix::operator+=(const Matrix &mat)
         throw std::invalid_argument("Matrices dimensions dont match!\n");
     }
 
+    // add matrices
     for (size_t i = 0; i < this->rows; ++i)
     {
         for (size_t j = 0; j < this->columns; ++j)
@@ -200,7 +198,8 @@ Matrix &Matrix::operator*=(const double &value)
     return *this;
 }
 
-Matrix operator*(const double &value, const Matrix &mat) { return mat * value; }
+Matrix zich::operator*(const double &value, const Matrix &mat) { return mat * value; }
+Matrix zich::operator*(double const &value, Matrix &mat) { return mat * value; }
 
 // ---------------------------------------------------------------
 // matrix multiplaction operators (*)
@@ -234,6 +233,13 @@ Matrix Matrix::operator*(const Matrix &mat) const
 
 Matrix &Matrix::operator*=(const Matrix &mat)
 {
+    Matrix &matrix = *this;
+    Matrix product = matrix * mat;
+
+    this->mat = product.mat;
+    this->rows = product.rows;
+    this->columns = product.columns;
+
     return *this;
 }
 
@@ -307,29 +313,48 @@ bool Matrix::operator!=(const Matrix &mat) const { return !(*this == mat); }
 // ---------------------------------------------------------------
 // increment and decrement operators
 // ---------------------------------------------------------------
-Matrix &Matrix::operator++() { return *this += 1; }    // prefix (++x)
+Matrix &Matrix::operator++() { return *this += 1; } // prefix (++x)
 
-Matrix &Matrix::operator++(int) { return *this += 1; } // postfix (x++)
+Matrix Matrix::operator++(int) // postfix (x++)
+{
+    Matrix temp = *this;
+    ++*this;
+    return temp;
+}
 
-Matrix &Matrix::operator--() { return *this -= 1; }    // prefix (--x)
+Matrix &Matrix::operator--() { return *this -= 1; } // prefix (--x)
 
-Matrix &Matrix::operator--(int) { return *this -= 1; } // postfix (x--)
+Matrix Matrix::operator--(int) // postfix (x--)
+{
+    Matrix temp = *this;
+    --*this;
+    return temp;
+}
 
 // ---------------------------------------------------------------
 // input and output operators
 // ---------------------------------------------------------------
 std::ostream &zich::operator<<(std::ostream &out, const Matrix &mat)
 {
-    for (size_t i = 0; i < mat.mat.size(); ++i)
+    // print all rows but last
+    for (size_t i = 0; i < mat.mat.size() - 1; ++i)
     {
-        std::cout << "[";
+        out << "[";
         for (size_t j = 0; j < mat.mat.at(i).size() - 1; ++j)
         {
-            std::cout << mat.mat.at(i).at(j) << " ";
+            out << mat.mat.at(i).at(j) << " ";
         }
-        std::cout << mat.mat.at(i).at(mat.mat.at(i).size() - 1);
-        std::cout << "]" << std::endl;
+        out << mat.mat.at(i).at(mat.mat.at(i).size() - 1);
+        out << "]" << std::endl;
     }
+
+    // print last row
+    out << "[";
+    for (size_t j = 0; j < mat.mat.at(mat.mat.size() - 1).size() - 1; ++j)
+    {
+        out << mat.mat.at(mat.mat.size() - 1).at(j) << " ";
+    }
+    out << mat.mat.at(mat.mat.size() - 1).at(mat.mat.at(mat.mat.size() - 1).size() - 1) << "]"; // doesnt look good
 
     return out;
 }
@@ -342,15 +367,15 @@ std::istream &zich::operator>>(std::istream &in, Matrix &mat)
     // try to spilt
     std::vector<std::string> str_rows = split(str, ", ");
 
-    // modify row string
-    str_rows[0] = str_rows[0].substr(1, str_rows[0].size() - 4);
+    // modify row string (get rid of [])
+    str_rows[0] = str_rows[0].substr(1, str_rows[0].size() - 2);
     for (size_t i = 1; i < str_rows.size(); ++i)
     {
         str_rows[i] = str_rows[i].substr(1, str_rows[i].size() - 2);
     }
 
     // check if rows have the same shape
-    size_t row_length = str_rows.size();
+    size_t row_length = str_rows[0].size();
 
     for (size_t i = 1; i < str_rows.size(); ++i)
     {

@@ -1,3 +1,12 @@
+#!make -f
+# This Makefile can handle any set of cpp and hpp files.
+# To use it, you should put all your cpp and hpp files in the SOURCE_PATH folder.
+
+CXX=clang++-9
+CXXVERSION=c++2a
+SOURCE_PATH=sources
+OBJECT_PATH=objects
+CXXFLAGS=-std=$(CXXVERSION) -Werror -g -Wsign-conversion -I$(SOURCE_PATH)
 TIDY_FLAGS=-extra-arg=-std=$(CXXVERSION) -checks=bugprone-*,clang-analyzer-*,cppcoreguidelines-*,performance-*,portability-*,readability-*,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-owning-memory --warnings-as-errors=*
 VALGRIND_FLAGS=-v --leak-check=full --show-leak-kinds=all  --error-exitcode=99
 
@@ -7,16 +16,7 @@ OBJECTS=$(subst sources/,objects/,$(subst .cpp,.o,$(SOURCES)))
 
 run: test
 
-main: main.o Matrix.o
-	clang++-9 -o main main.o Matrix.o
-
-main.o: sources/main.cpp
-	clang++-9 -c -g sources/main.cpp
-
-Matrix.o: sources/Matrix.cpp sources/Matrix.hpp
-	clang++-9 -c -g sources/Matrix.cpp sources/Matrix.hpp
-
-test: TestRunner.o Test.o $(OBJECTS)
+test: TestRunner.o StudentTest1.o StudentTest2.o StudentTest3.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 %.o: %.cpp $(HEADERS)
@@ -25,8 +25,14 @@ test: TestRunner.o Test.o $(OBJECTS)
 $(OBJECT_PATH)/%.o: $(SOURCE_PATH)/%.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) --compile $< -o $@
 
-Test.o: Test.cpp 
-	$(CXX) $(CXXFLAGS) -o Test.o
+StudentTest1.cpp:  # Itzik
+	curl https://raw.githubusercontent.com/itzikbs1/Ex3_A_Cpp/master/Test.cpp > $@
+
+StudentTest2.cpp:  # Itamar Almog
+	curl https://raw.githubusercontent.com/itamaralmog/matrix-calculator-a/main/Test.cpp > $@
+
+StudentTest3.cpp:  # Amit Melamed
+	curl https://raw.githubusercontent.com/amitmelamed/-matrix-calculator-a/main/Test.cpp > $@
 
 tidy:
 	clang-tidy $(SOURCES) $(TIDY_FLAGS) --
@@ -37,4 +43,3 @@ valgrind: test
 clean:
 	rm -f $(OBJECTS) *.o test* 
 	rm -f StudentTest*.cpp
-	rm main sources/*.gch
