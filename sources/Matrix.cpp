@@ -27,9 +27,8 @@ std::vector<std::string> split(std::string str, const std::string &delimeter)
     return result;
 }
 
-// constructor and destructor
 std::vector<double> empty(1, 0.0);
-Matrix::~Matrix() {}
+Matrix::~Matrix() {} // destructor
 
 // ---------------------------------------------------------------
 // real value addition operators (+)
@@ -354,20 +353,27 @@ std::ostream &zich::operator<<(std::ostream &out, const Matrix &mat)
     {
         out << mat.mat.at(mat.mat.size() - 1).at(j) << " ";
     }
-    out << mat.mat.at(mat.mat.size() - 1).at(mat.mat.at(mat.mat.size() - 1).size() - 1) << "]"; // doesnt look good
+    out << mat.mat.at(mat.mat.size() - 1).at(mat.mat.at(mat.mat.size() - 1).size() - 1) << "]"; 
 
     return out;
 }
 std::istream &zich::operator>>(std::istream &in, Matrix &mat)
 {
+    std::string prefix;
     // get input as string
     std::string str;
+    // in.ignore();
+    in >> prefix;
     getline(in, str);
 
     // try to spilt
+    if (prefix.at(0) != '\n')
+    {
+        str = prefix + str;
+    }
     std::vector<std::string> str_rows = split(str, ", ");
 
-    // modify row string (get rid of [])
+    // modify row string (get rid of '[]')
     str_rows[0] = str_rows[0].substr(1, str_rows[0].size() - 2);
     for (size_t i = 1; i < str_rows.size(); ++i)
     {
@@ -375,11 +381,11 @@ std::istream &zich::operator>>(std::istream &in, Matrix &mat)
     }
 
     // check if rows have the same shape
-    size_t row_length = str_rows[0].size();
+    size_t row_length = split(str_rows[0], " ").size();
 
     for (size_t i = 1; i < str_rows.size(); ++i)
     {
-        if (str_rows[i].size() != row_length)
+        if (split(str_rows[i], " ").size() != row_length)
         {
             throw std::invalid_argument("All rows must be the same length!!\n");
         }
@@ -397,5 +403,7 @@ std::istream &zich::operator>>(std::istream &in, Matrix &mat)
         mat.mat.push_back(vec);
     }
 
+    mat.rows = mat.mat.size();
+    mat.columns = row_length;
     return in;
 }

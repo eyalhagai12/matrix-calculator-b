@@ -1,38 +1,137 @@
 #include <iostream>
-#include "Matrix.hpp"
+#include "sources/Matrix.hpp"
 
 using namespace zich;
 using namespace std;
 
 int main(int argc, char const *argv[])
 {
-    vector<double> vec = {1, 2, 3, 4, 5, 6};
-    vector<double> vec2 = {1, 2, 3, 4, -5, 6};
+    int option = 0;
+    cout << "Welcome to the matrix calculator!" << endl;
+    cout << "Supported operations: " << endl
+         << "1. mat + mat" << endl
+         << "2. mat - mat" << endl
+         << "3. mat * mat" << endl
+         << "4. scalar * mat" << endl
+         << "5. mat--" << endl
+         << "6. mat++" << endl
+         << endl
+         << "Also supports comperison operations such as: " << endl
+         << "7. mat > mat" << endl
+         << "8. mat < mat" << endl
+         << "9. mat => mat" << endl
+         << "10. mat <= mat" << endl
+         << "11. mat != mat" << endl
+         << "12. mat == mat" << endl;
 
-    Matrix mat1(vec, 2, 3);
-    Matrix mat2(vec, 2, 3);
-    Matrix mat3(vec2, 2, 3);
-    Matrix mat4(vec2, 3 ,2);
+    cout << "Please choose the number of the option you would like (use -1 to exit): ";
+    cin >> option;
 
-    cout << "mat1 > mat2: " << (mat1 > mat2) << std::endl;
-    cout << "mat1 >= mat2: " << (mat1 >= mat2) << std::endl;
-    cout << "mat1 < mat2: " << (mat1 < mat2) << std::endl;
-    cout << "mat1 <= mat2: " << (mat1 <= mat2) << std::endl;
-    cout << "mat1 == mat2: " << (mat1 == mat2) << std::endl;
-    cout << "mat1 != mat2: " << (mat1 != mat2) << std::endl;
-    cout << endl;
-    cout << "mat1 > mat3: " << (mat1 > mat3) << std::endl;
-    cout << "mat1 >= mat3: " << (mat1 >= mat3) << std::endl;
-    cout << "mat1 < mat3: " << (mat1 < mat3) << std::endl;
-    cout << "mat1 <= mat3: " << (mat1 <= mat3) << std::endl;
-    cout << "mat1 == mat3: " << (mat1 == mat3) << std::endl;
-    cout << "mat1 != mat3: " << (mat1 != mat3) << std::endl;
-    cout << endl;
-    cout << "(*) \n" << (mat1 * mat4) << endl;
-    cout << endl;
-    cout << "(+) \n" << (mat1 + mat3) << endl;
-    cout << endl;
-    cout << "(-) \n" << (mat1 - mat3) << endl;
+    while (option != -1)
+    {
+        Matrix mat1;
+        Matrix mat2;
+        double scalar = 0;
+
+        switch (option)
+        {
+        case 1:
+            cout << "Enter the first matrix" << endl;
+            cin >> mat1;
+            cout << "Enter the second matrix" << endl;
+            cin >> mat2;
+            cout << "Result: " << endl
+                 << mat1 + mat2 << endl;
+            break;
+        case 2:
+            cout << "Enter the first matrix" << endl;
+            cin >> mat1;
+            cout << "Enter the second matrix" << endl;
+            cin >> mat2;
+            cout << "Result: " << endl
+                 << mat1 - mat2 << endl;
+            break;
+        case 3:
+            cout << "Enter the first matrix" << endl;
+            cin >> mat1;
+            cout << "Enter the second matrix" << endl;
+            cin >> mat2;
+            cout << "Result: " << endl
+                 << mat1 * mat2 << endl;
+            break;
+        case 4:
+            cout << "Enter a matrix" << endl;
+            cin >> mat1;
+            cout << "Enter a scalar" << endl;
+            cin >> scalar;
+            cout << "Result: " << endl
+                 << mat1 * scalar << endl;
+            break;
+        case 5:
+            cout << "Enter a matrix" << endl;
+            cin >> mat1;
+            cout << "Result: " << endl
+                 << --mat1 << endl;
+            break;
+        case 6:
+            cout << "Enter a matrix" << endl;
+            cin >> mat1;
+            cout << "Result: " << endl
+                 << ++mat1 << endl;
+            break;
+        case 7:
+            cout << "Enter the first matrix" << endl;
+            cin >> mat1;
+            cout << "Enter the second matrix" << endl;
+            cin >> mat2;
+            cout << "Result: " << (mat1 > mat2) << endl;
+            break;
+        case 8:
+            cout << "Enter the first matrix" << endl;
+            cin >> mat1;
+            cout << "Enter the second matrix" << endl;
+            cin >> mat2;
+            cout << "Result: " << (mat1 < mat2) << endl;
+            break;
+        case 9:
+            cout << "Enter the first matrix" << endl;
+            cin >> mat1;
+            cout << "Enter the second matrix" << endl;
+            cin >> mat2;
+            cout << "Result: " << (mat1 >= mat2) << endl;
+            break;
+        case 10:
+            cout << "Enter the first matrix" << endl;
+            cin >> mat1;
+            cout << "Enter the second matrix" << endl;
+            cin >> mat2;
+            cout << "Result: " << (mat1 <= mat2) << endl;
+            break;
+        case 11:
+            cout << "Enter the first matrix" << endl;
+            cin >> mat1;
+            cout << "Enter the second matrix" << endl;
+            cin >> mat2;
+            cout << "Result: " << (mat1 != mat2) << endl;
+            break;
+        case 12:
+            cout << "Enter the first matrix" << endl;
+            cin >> mat1;
+            cout << "Enter the second matrix" << endl;
+            cin >> mat2;
+            cout << "Result: " << (mat1 == mat2) << endl;
+            break;
+
+        default:
+            cout << "Invlaid Option" << endl;
+            break;
+        }
+
+        cout << "Please choose the number of the option you would like (use -1 to exit): ";
+        cin >> option;
+    }
+
+    cout << "Thanks and Goodbye!" << endl;
 
     return 0;
 }

@@ -19,6 +19,9 @@ run: test
 test: TestRunner.o StudentTest1.o StudentTest2.o StudentTest3.o $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
+main: $(OBJECTS) main.o
+	$(CXX) $(CXXFLAGS) $^ -o main
+
 %.o: %.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) --compile $< -o $@
 
@@ -43,3 +46,4 @@ valgrind: test
 clean:
 	rm -f $(OBJECTS) *.o test* 
 	rm -f StudentTest*.cpp
+	rm main
